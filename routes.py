@@ -249,11 +249,6 @@ def browse(type):
                          total_pages=min(response.get('total_pages', 1), 500),
                          has_more=page < min(response.get('total_pages', 1), 500))
 
-@main_bp.route('/watchlist')
-def watchlist():
-    """Watchlist page."""
-    return render_template('watchlist.html')
-
 @main_bp.route("/help")
 def help_center():
     return render_template("help.html")
@@ -267,47 +262,6 @@ def terms():
 @main_bp.route("/privacy")
 def privacy():
     return render_template("privacy.html")
-
-@main_bp.route('/watchlist/add', methods=['POST'])
-def add_to_watchlist():
-    """Add item to watchlist."""
-    from flask import request
-    import json
-    
-    try:
-        data = request.get_json()
-        item = {
-            'id': data.get('id'),
-            'type': data.get('type'),
-            'title': data.get('title'),
-            'poster_path': data.get('poster_path'),
-            'vote_average': data.get('vote_average'),
-            'release_date': data.get('release_date')
-        }
-        
-        watchlist = session.get('watchlist', [])
-        watchlist.insert(0, item)
-        session['watchlist'] = watchlist
-        session.permanent = True
-        
-        return jsonify({'status': 'success', 'message': 'Added to watchlist', 'count': len(watchlist)})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
-
-@main_bp.route('/watchlist/remove/<int:item_id>', methods=['POST'])
-def remove_from_watchlist(item_id):
-    """Remove item from watchlist."""
-    from flask import jsonify
-    
-    try:
-        watchlist = session.get('watchlist', [])
-        watchlist = [item for item in watchlist if item.get('id') != item_id]
-        session['watchlist'] = watchlist
-        session.permanent = True
-        
-        return jsonify({'status': 'success', 'message': 'Removed from watchlist', 'count': len(watchlist)})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
 
 # API Routes for dynamic content
 @main_bp.route('/api/content')

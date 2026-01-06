@@ -1192,6 +1192,7 @@ input:focus, textarea:focus, select:focus {
     align-items: flex-end;
     justify-content: center;
     padding: 1rem;
+    gap: 12px;
     z-index: 2;
 }
 
@@ -1271,6 +1272,32 @@ input:focus, textarea:focus, select:focus {
 .featured-card {
     flex: 0 0 auto;
     width: 320px;
+}
+
+.movie-card-fav{
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition: transform .2s ease, background .2s ease;
+}
+
+.movie-card-fav:hover{
+  transform: scale(1.06);
+  background: rgba(255,255,255,0.16);
+}
+
+.movie-card-fav.active{
+  background: rgba(220, 53, 69, 0.85);
 }
 
 @media (min-width: 768px) {

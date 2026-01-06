@@ -49,10 +49,6 @@
                    href="{{ url_for('main.tv_shows') }}">
                     <i class="bi bi-tv"></i> <span data-i18n="tv">{{ t('tv') }}</span>
                 </a>
-                <a class="nav-btn {% if request.endpoint == 'main.watchlist' %}active{% endif %}"
-                   href="{{ url_for('main.watchlist') }}">
-                    <i class="bi bi-heart"></i> <span data-i18n="watchlist">{{ t('watchlist') }}</span>
-                </a>
             </div>
 
             <!-- Language Switcher -->
@@ -100,7 +96,6 @@
                 <ul class="footer-links">
                     <li><a href="{{ url_for('main.movies') }}" data-i18n="movies">{{ t('movies') }}</a></li>
                     <li><a href="{{ url_for('main.tv_shows') }}" data-i18n="tvShows">{{ t('tvShows') }}</a></li>
-                    <li><a href="{{ url_for('main.watchlist') }}" data-i18n="watchlist">{{ t('watchlist') }}</a></li>
                 </ul>
             </div>
 
