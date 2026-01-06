@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}CineStream Pro - Your Ultimate Movie Experience{% endblock %}
+
+{% block content %}
+<!-- Hero Slider -->
+<section class="hero-slider" id="heroSlider">
+    <!-- Slider Slides Container -->
+    <div id="heroSlidesContainer">
+        <!-- Slides will be loaded dynamically -->
+    </div>
+
+    <!-- Slider Indicators -->
+    <div class="slider-indicators" id="sliderIndicators">
+        <!-- Indicators will be loaded dynamically -->
+    </div>
+
+    <!-- Slider Progress -->
+    <div class="slider-progress" id="sliderProgress"></div>
+</section>
+
+<!-- Main Content -->
+<main>
+    <!-- Trending Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-fire"></i> <span data-i18n="trendingNow">Trending Now</span>
+                </h2>
+                <a href="{{ url_for('main.browse', type='trending') }}" class="see-all">
+                    <span data-i18n="seeAll">See All</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="carousel-container">
+                <button class="carousel-nav prev" onclick="app.scrollCarousel('trending', -1)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="carousel-nav next" onclick="app.scrollCarousel('trending', 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <div class="carousel-scroll" id="trendingCarousel">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Movies Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-star-fill"></i> <span data-i18n="popularMovies">Popular Movies</span>
+                </h2>
+                <a href="{{ url_for('main.browse', type='movies') }}" class="see-all">
+                    <span data-i18n="seeAll">See All</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="carousel-container">
+                <button class="carousel-nav prev" onclick="app.scrollCarousel('popular', -1)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="carousel-nav next" onclick="app.scrollCarousel('popular', 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <div class="carousel-scroll" id="popularCarousel">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular TV Shows Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-tv"></i> <span data-i18n="popularTVShows">Popular TV Shows</span>
+                </h2>
+                <a href="{{ url_for('main.browse', type='tvshows') }}" class="see-all">
+                    <span data-i18n="seeAll">See All</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="carousel-container">
+                <button class="carousel-nav prev" onclick="app.scrollCarousel('tvshows', -1)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="carousel-nav next" onclick="app.scrollCarousel('tvshows', 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <div class="carousel-scroll" id="tvshowsCarousel">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Rated Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-trophy"></i> <span data-i18n="topRated">Top Rated</span>
+                </h2>
+                <a href="{{ url_for('main.browse', type='toprated') }}" class="see-all">
+                    <span data-i18n="seeAll">See All</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="carousel-container">
+                <button class="carousel-nav prev" onclick="app.scrollCarousel('toprated', -1)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="carousel-nav next" onclick="app.scrollCarousel('toprated', 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <div class="carousel-scroll" id="topratedCarousel">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-grid"></i> <span data-i18n="browseByGenre">Browse by Genre</span>
+                </h2>
+            </div>
+            <div class="category-grid" id="categoryGrid">
+                <div class="category-card" onclick="genreFilter.selectGenre(28, this)">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    <h4 data-i18n="action">Action</h4>
+                    <span data-i18n="actionDesc">Thrilling adventures</span>
+                </div>
+
+                <div class="category-card" onclick="genreFilter.selectGenre(35, this)">
+                    <i class="bi bi-emoji-laughing"></i>
+                    <h4 data-i18n="comedy">Comedy</h4>
+                    <span data-i18n="comedyDesc">Laugh out loud</span>
+                </div>
+
+                <div class="category-card" onclick="genreFilter.selectGenre(18, this)">
+                    <i class="bi bi-heart-pulse"></i>
+                    <h4 data-i18n="drama">Drama</h4>
+                    <span data-i18n="dramaDesc">Emotional stories</span>
+                </div>
+
+                <div class="category-card" onclick="genreFilter.selectGenre(27, this)">
+                    <i class="bi bi-emoji-frown"></i>
+                    <h4 data-i18n="horror">Horror</h4>
+                    <span data-i18n="horrorDesc">Spine-chilling tales</span>
+                </div>
+
+                <div class="category-card" onclick="genreFilter.selectGenre(878, this)">
+                    <i class="bi bi-rocket"></i>
+                    <h4 data-i18n="scifi">Sci-Fi</h4>
+                    <span data-i18n="scifiDesc">Future adventures</span>
+                </div>
+
+                <div class="category-card" onclick="genreFilter.selectGenre(16, this)">
+                    <i class="bi bi-joystick"></i>
+                    <h4 data-i18n="animation">Animation</h4>
+                    <span data-i18n="animationDesc">Animated worlds</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Genre Filter Results Section -->
+    <section class="genre-results-section" id="genreResultsSection" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-collection"></i> <span id="genreResultsTitle">Genre Results</span>
+                </h2>
+                <button class="btn-close-genre" onclick="genreFilter.clearFilter()">
+                  <i class="bi bi-x-lg"></i>
+                  <span data-i18n="clearFilter">Clear Filter</span>
+                </button>
+            </div>
+            <div class="row g-3 genre-results-grid" id="genreResultsGrid"></div>
+                <!-- Genre filtered content will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-film"></i>
+                        </div>
+                        <div class="stat-number" data-count="50000">0</div>
+                        <div class="stat-label" data-i18n="moviesAvailable">Movies Available</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-tv"></i>
+                        </div>
+                        <div class="stat-number" data-count="10000">0</div>
+                        <div class="stat-label" data-i18n="tvShows">TV Shows</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <div class="stat-number" data-count="150">0</div>
+                        <div class="stat-label" data-i18n="countries">Countries</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-number" data-count="5000000">0</div>
+                        <div class="stat-label" data-i18n="activeUsers">Active Users</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Genre Filter Functionality -->
+<script>
+    window.genreFilter = {
+        currentGenre: null,
+        currentGenreName: null,
+
+        selectGenre: function (genreId, maybeNameOrEl, maybeEl) {
+            const element =
+                (maybeNameOrEl && maybeNameOrEl.nodeType === 1) ? maybeNameOrEl :
+                (maybeEl && maybeEl.nodeType === 1) ? maybeEl :
+                null;
+
+            if (!element) return;
+
+            document.querySelectorAll('.category-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+
+            this.currentGenre = genreId;
+
+            const titleEl = element.querySelector('h4[data-i18n]');
+            const genreName = titleEl ? titleEl.textContent.trim() : 'Genre';
+
+            document.getElementById('genreResultsTitle').textContent =
+                `${genreName} ${window.t ? window.t('movies') : 'Movies'}`;
+
+            const resultsSection = document.getElementById('genreResultsSection');
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            this.loadGenreContent();
+        },
+
+        loadGenreContent: function () {
+  const grid = document.getElementById('genreResultsGrid');
+
+  grid.innerHTML = `
+    <div class="loading-spinner">
+      <i class="bi bi-arrow-repeat spin"></i> ${window.t ? window.t('loading') : 'Loading...'}
+    </div>
+  `;
+
+  const url = `/api/content?type=movie&page=1&genre=${this.currentGenre}`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      const results = data.results || [];
+
+      if (!results.length) {
+        grid.innerHTML = `
+          <div class="no-results">
+            <i class="bi bi-inbox"></i>
+            <p data-i18n="noMoviesInGenre">${window.t ? window.t('noMoviesInGenre') : 'No movies found in this genre'}</p>
+          </div>
+        `;
+        if (window.app?.updateTranslations) window.app.updateTranslations(grid);
+        return;
+      }
+
+      // IMPORTANT: Wrap each card in a column
+      grid.innerHTML = results.map(item => `
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="movie-card" onclick="app.openContentModal(${item.id}, 'movie')">
+            <div class="movie-card-image">
+              <img
+                src="${item.poster_path
+                  ? 'https://image.tmdb.org/t/p/w200' + item.poster_path
+                  : '{{ get_poster_url(None) }}'}"
+                alt="${(item.title || item.name || '').replace(/"/g, '&quot;')}"
+                loading="lazy"
+                onerror="this.src='{{ get_poster_url(None) }}'">
+              <div class="movie-card-overlay">
+                <button class="movie-card-play"
+                  onclick="event.stopPropagation(); app.openContentModal(${item.id}, 'movie')">
+                  <i class="bi bi-play-fill"></i>
+                </button>
+              </div>
+            </div>
+            <div class="movie-card-info">
+              <h4 class="movie-card-title">${item.title || item.name || ''}</h4>
+              <div class="movie-card-meta">
+                <span>${(item.release_date || '').split('-')[0]}</span>
+                <span class="movie-card-rating">
+                  <i class="bi bi-star-fill"></i> ${Number(item.vote_average || 0).toFixed(1)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      if (window.app?.updateTranslations) window.app.updateTranslations(grid);
+    })
+    .catch(err => {
+      console.error('Error loading genre content:', err);
+      grid.innerHTML = '<p class="error-message">Error loading content</p>';
+    });
+},
+
+        clearFilter: function () {
+            // Hide results section
+            document.getElementById('genreResultsSection').style.display = 'none';
+
+            // Remove active state from category cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Reset current genre
+            this.currentGenre = null;
+            this.currentGenreName = null;
+
+            // Scroll back to categories
+            document.getElementById('categoryGrid').scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    };
+</script>
+<!-- Page-specific JavaScript can be added here -->
+{% endblock %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CineStream Pro - Discover movies and TV shows with TMDb API">
+    <meta name="theme-color" content="#0B0C15">
+    <title>{% block title %}CineStream Pro - Your Ultimate Movie Experience{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+
+    <!-- Static CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<!-- Top hero background (decorative) -->
+<div id="topHeroBg" class="top-hero-bg" aria-hidden="true"></div>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg" id="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">
+            <i class="bi bi-film brand-icon me-2"></i>
+            <span class="brand-text">CineStream</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-flex flex-wrap align-items-center gap-1 ms-auto">
+                <a class="nav-btn {% if request.endpoint == 'main.index' %}active{% endif %}"
+                   href="{{ url_for('main.index') }}">
+                    <i class="bi bi-house-door"></i> <span data-i18n="home">{{ t('home') }}</span>
+                </a>
+                <a class="nav-btn {% if request.endpoint == 'main.movies' %}active{% endif %}"
+                   href="{{ url_for('main.movies') }}">
+                    <i class="bi bi-camera-reels"></i> <span data-i18n="movies">{{ t('movies') }}</span>
+                </a>
+                <a class="nav-btn {% if request.endpoint == 'main.tv_shows' %}active{% endif %}"
+                   href="{{ url_for('main.tv_shows') }}">
+                    <i class="bi bi-tv"></i> <span data-i18n="tv">{{ t('tv') }}</span>
+                </a>
+                <a class="nav-btn {% if request.endpoint == 'main.watchlist' %}active{% endif %}"
+                   href="{{ url_for('main.watchlist') }}">
+                    <i class="bi bi-heart"></i> <span data-i18n="watchlist">{{ t('watchlist') }}</span>
+                </a>
+            </div>
+
+            <!-- Language Switcher -->
+            <div class="language-switcher ms-lg-3 mt-3 mt-lg-0">
+                <button type="button" class="language-current" onclick="app.toggleLanguageDropdown()">
+                    <span id="currentFlag">{{ current_flag }}</span>
+                    <span id="currentLang">{{ current_language|upper }}</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+
+                <div class="language-dropdown" id="languageDropdown">
+                    {% for code, name in config.LANGUAGES.items() %}
+                    <a class="language-option {% if current_language == code %}active{% endif %}"
+                       data-lang="{{ code }}"
+                       href="{{ url_for('main.set_language', lang=code) }}"
+                       onclick="event.preventDefault(); app.setLanguage('{{ code }}')">
+                        <span class="lang-flag">{{ config.LANGUAGE_FLAGS[code] }}</span>
+                        <span class="lang-name">{{ name }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand">
+                    <span class="brand-text">CineStream</span>
+                </div>
+                <p class="footer-text" data-i18n="footerText">{{ t('footerText') }}</p>
+            </div>
+
+            <div class="col-lg-2 col-md-3">
+                <h6 class="footer-title" data-i18n="browse">{{ t('browse') }}</h6>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('main.movies') }}" data-i18n="movies">{{ t('movies') }}</a></li>
+                    <li><a href="{{ url_for('main.tv_shows') }}" data-i18n="tvShows">{{ t('tvShows') }}</a></li>
+                    <li><a href="{{ url_for('main.watchlist') }}" data-i18n="watchlist">{{ t('watchlist') }}</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3">
+                <h6 class="footer-title" data-i18n="discover">{{ t('discover') }}</h6>
+                <ul class="footer-links">
+                    <li>
+                        <a href="{{ url_for('main.browse', type='trending') }}" data-i18n="trendingNow">
+                            {{ t('trendingNow') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.browse', type='movies') }}" data-i18n="popularMovies">
+                            {{ t('popularMovies') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.browse', type='tvshows') }}" data-i18n="popularTVShows">
+                            {{ t('popularTVShows') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3">
+                <h6 class="footer-title" data-i18n="support">{{ t('support') }}</h6>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('main.help_center') }}" data-i18n="helpCenter">{{ t('helpCenter') }}</a>
+                    </li>
+                    <li><a href="{{ url_for('main.terms') }}" data-i18n="termsOfService">{{ t('termsOfService') }}</a>
+                    </li>
+                    <li><a href="{{ url_for('main.privacy') }}" data-i18n="privacyPolicy">{{ t('privacyPolicy') }}</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3">
+                <h6 class="footer-title" data-i18n="followUs">{{ t('followUs') }}</h6>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0" data-i18n="copyright">{{ t('copyright') }} {{ t('poweredBy') }}
+                <a href="https://www.themoviedb.org/" target="_blank" rel="noopener"
+                   style="color: var(--primary);">TMDb</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Static JS -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<!-- Back to Top -->
+<button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">
+  <i class="bi bi-arrow-up"></i>
+</button>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

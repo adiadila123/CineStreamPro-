@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}My Watchlist - CineStream Pro{% endblock %}
+
+{% block content %}
+<div class="watchlist-page">
+    <div class="container" style="padding-top: 120px;">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="section-title mb-4">
+                    <i class="bi bi-heart-fill"></i>
+                    <span data-i18n="myWatchlist">My Watchlist</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Watchlist Stats -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex gap-4">
+                    <div class="stat-item watchlist-stat">
+                        <div class="stat-number" id="watchlistCount">0</div>
+                        <div class="stat-label" data-i18n="totalItems">Total Items</div>
+                    </div>
+                    <div class="stat-item watchlist-stat">
+                        <div class="stat-number" id="watchlistMovies">0</div>
+                        <div class="stat-label" data-i18n="movies">Movies</div>
+                    </div>
+                    <div class="stat-item watchlist-stat">
+                        <div class="stat-number" id="watchlistTV">0</div>
+                        <div class="stat-label" data-i18n="tvShows">TV Shows</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watchlist Content -->
+        <div class="row" id="watchlistGrid">
+            <div class="col-12 text-center py-5" id="emptyState">
+                <i class="bi bi-heart" style="font-size: 4rem; color: var(--text-muted);"></i>
+                <p class="mt-3 text-muted" data-i18n="emptyWatchlist">Your watchlist is empty</p>
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3" data-i18n="browseContent">Browse Content</a>
+            </div>
+        </div>
+
+        <!-- Clear Watchlist -->
+        <div class="row mt-4" id="clearWatchlist" style="display: none;">
+            <div class="col-12 text-center">
+                <button class="btn btn-outline-danger" onclick="watchlistPage.clearWatchlist()" data-i18n="clearWatchlist">Clear Watchlist</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Page-specific JavaScript -->
+<script>
+    // Watchlist page functionality
+    window.watchlistPage = {
+        getWatchlist: function() {
+            const localWatchlist = localStorage.getItem('cinestream_watchlist');
+            if (localWatchlist) {
+                return JSON.parse(localWatchlist);
+            }
+            return [];
+        },
+
+        renderWatchlist: function() {
+            const watchlist = this.getWatchlist();
+            const grid = document.getElementById('watchlistGrid');
+            const emptyState = document.getElementById('emptyState');
+            const clearBtn = document.getElementById('clearWatchlist');
+            
+            // Update stats
+            document.getElementById('watchlistCount').textContent = watchlist.length;
+            document.getElementById('watchlistMovies').textContent = watchlist.filter(item => item.type === 'movie').length;
+            document.getElementById('watchlistTV').textContent = watchlist.filter(item => item.type === 'tv').length;
+
+            if (watchlist.length === 0) {
+                emptyState.style.display = 'block';
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            clearBtn.style.display = 'block';
+
+            grid.innerHTML = watchlist.map((item, index) => `
+                <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="movie-card">
+                        <div class="movie-card-image">
+                            <img src="${item.poster_path ? 'https://image.tmdb.org/t/p/w200' + item.poster_path : 'data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300"><rect fill="#1E1E2E" width="200" height="300"/><text fill="#64748B" font-family="Arial" font-size="16" x="50%" y="50%" text-anchor="middle">No Image</text></svg>')}'}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300"><rect fill="#1E1E2E" width="200" height="300"/><text fill="#64748B" font-family="Arial" font-size="16" x="50%" y="50%" text-anchor="middle">No Image</text></svg>')}">
+                            <div class="movie-card-overlay">
+                                <button class="movie-card-play" onclick="app.openContentModal(${item.id}, '${item.type}')">
+                                    <i class="bi bi-play-fill"></i>
+                                </button>
+                                <button class="btn-remove" onclick="watchlistPage.removeFromWatchlist(${item.id}, '${item.type}')">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="movie-card-info">
+                            <h4 class="movie-card-title">${item.title}</h4>
+                            <div class="movie-card-meta">
+                                <span>${(item.release_date || '').split('-')[0]}</span>
+                                <span class="movie-card-rating"><i class="bi bi-star-fill"></i> ${item.vote_average.toFixed(1)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        },
+
+        removeFromWatchlist: function(id, type) {
+            let watchlist = this.getWatchlist();
+            watchlist = watchlist.filter(item => !(item.id === id && item.type === type));
+            localStorage.setItem('cinestream_watchlist', JSON.stringify(watchlist));
+            this.renderWatchlist();
+            showToast(t('removedFromWatchlist'), 'info');
+        },
+
+        clearWatchlist: function() {
+            if (confirm(t('confirmClearWatchlist'))) {
+                localStorage.removeItem('cinestream_watchlist');
+                this.renderWatchlist();
+                showToast(t('watchlistCleared'), 'info');
+            }
+        },
+
+        init: function() {
+            this.renderWatchlist();
+        }
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        watchlistPage.init();
+    });
+</script>
+{% endblock %}

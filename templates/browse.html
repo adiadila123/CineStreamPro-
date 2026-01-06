@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Browse {{ title|title }} - CineStream Pro{% endblock %}
+
+{% block content %}
+<div class="browse-page">
+    <div class="container" style="padding-top: 120px;">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="section-title mb-4">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span data-i18n="browseByGenre">Browse {{ title|replace('_', ' ')|title }}</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="filters-bar d-flex flex-wrap gap-3 align-items-center p-4">
+
+                    <div class="filter-wrap">
+                        <select class="form-select filter-select" onchange="browsePage.filterContent()">
+                            <option value="" data-i18n="allGenres">All Genres</option>
+                            {% for genre in genres %}
+                            <option value="{{ genre.id }}">{{ genre.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-wrap">
+                        <select class="form-select filter-select" onchange="browsePage.filterContent()">
+                            <option value="" data-i18n="allYears">All Years</option>
+                            {% for year in range(2025, 1970, -1) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-wrap">
+                        <select class="form-select filter-select" onchange="browsePage.filterContent()">
+                            <option value="popularity.desc" data-i18n="sortPopularity">Popularity</option>
+                            <option value="vote_average.desc" data-i18n="sortRating">Top Rated</option>
+                            <option value="primary_release_date.desc" data-i18n="sortNewest">Newest</option>
+                            <option value="revenue.desc" data-i18n="sortRevenue">Revenue</option>
+                        </select>
+                    </div>
+
+                    <span class="text-muted ms-auto" id="resultsCount">
+                      {% if items %}{{ items|length }} results{% else %}0 results{% endif %}
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="row g-2" id="contentGrid">
+            {% if items %}
+            {% for item in items %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="movie-card"
+                     onclick="app.openContentModal({{ item.id }}, '{{ item.media_type or 'movie' }}')">
+                    <div class="movie-card-image">
+                        <img src="{{ get_poster_url(item.poster_path) }}" alt="{{ item.title or item.name }}"
+                             loading="lazy" onerror="this.src='{{ get_poster_url(None) }}'">
+                        <div class="movie-card-overlay">
+                            <button class="movie-card-play"
+                                    onclick="event.stopPropagation(); app.openContentModal({{ item.id }}, '{{ item.media_type or 'movie' }}')">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="movie-card-info">
+                        <h4 class="movie-card-title">{{ item.title or item.name }}</h4>
+                        <div class="movie-card-meta">
+                            <span>{{ (item.release_date or item.first_air_date or '').split('-')[0] }}</span>
+                            <span class="movie-card-rating"><i
+                                    class="bi bi-star-fill"></i> {{ item.vote_average }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-muted);"></i>
+                <p class="mt-3 text-muted" data-i18n="noResults">No content found</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Load More -->
+        {% if has_more %}
+        <div class="row mt-4 mb-5">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary" onclick="browsePage.loadMore()" id="loadMoreBtn" data-i18n="loadMore">
+                    Load More
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Browse page functionality
+  window.browsePage = {
+    currentPage: {{ page }},
+    currentType: "{{ title }}",   // e.g. movies, tvshows, trending, toprated
+    currentGenre: "",
+    currentYear: "",
+    currentSort: "popularity.desc",
+
+    resolveApiType: function () {
+      const t = (this.currentType || "").toLowerCase();
+
+      if (t === "movies") return "movie";
+      if (t === "tvshows" || t === "tv_shows" || t === "tv") return "tv";
+
+      // If your backend supports trending as "all", keep this.
+      // If not, change to: return "movie";
+      if (t === "trending") return "all";
+
+      // Default
+      return "movie";
+    },
+
+    filterContent: function () {
+      const selects = document.querySelectorAll(".filter-select");
+      this.currentGenre = selects[0]?.value || "";
+      this.currentYear  = selects[1]?.value || "";
+      this.currentSort  = selects[2]?.value || "popularity.desc";
+      this.currentPage = 1;
+      this.loadContent(true);
+    },
+
+    loadMore: function () {
+      this.currentPage++;
+      this.loadContent(false);
+    },
+
+    loadContent: function (reset) {
+      const type = this.resolveApiType();
+
+      const url =
+        `/api/content?type=${encodeURIComponent(type)}` +
+        `&page=${encodeURIComponent(this.currentPage)}` +
+        `&genre=${encodeURIComponent(this.currentGenre)}` +
+        `&year=${encodeURIComponent(this.currentYear)}` +
+        `&sort=${encodeURIComponent(this.currentSort)}`;
+
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+      if (loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.classList.add("disabled");
+      }
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const grid = document.getElementById("contentGrid");
+          const results = data.results || [];
+
+          if (reset || this.currentPage === 1) {
+            grid.innerHTML = "";
+          }
+
+          if (results.length === 0 && reset) {
+            grid.innerHTML = `
+              <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox" style="font-size:4rem;color:var(--text-muted);"></i>
+                <p class="mt-3 text-muted" data-i18n="noResults">No content found</p>
+              </div>
+            `;
+          }
+
+          results.forEach(item => {
+            const mediaType = item.media_type || (item.title ? "movie" : "tv");
+
+            const col = document.createElement("div");
+            col.className = "col-6 col-md-4 col-lg-3";
+            col.innerHTML = `
+              <div class="movie-card" onclick="app.openContentModal(${item.id}, '${mediaType}')">
+                <div class="movie-card-image">
+                  <img
+                    src="${item.poster_path ? "https://image.tmdb.org/t/p/w200" + item.poster_path : "{{ get_poster_url(None) }}"}"
+                    alt="${(item.title || item.name || "").replace(/"/g, "&quot;")}"
+                    loading="lazy"
+                    onerror="this.src='{{ get_poster_url(None) }}'">
+                  <div class="movie-card-overlay">
+                    <button class="movie-card-play"
+                      onclick="event.stopPropagation(); app.openContentModal(${item.id}, '${mediaType}')">
+                      <i class="bi bi-play-fill"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="movie-card-info">
+                  <h4 class="movie-card-title">${item.title || item.name || ""}</h4>
+                  <div class="movie-card-meta">
+                    <span>${(item.release_date || item.first_air_date || "").split("-")[0]}</span>
+                    <span class="movie-card-rating"><i class="bi bi-star-fill"></i> ${Number(item.vote_average || 0).toFixed(1)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            grid.appendChild(col);
+          });
+
+          // Update load more button visibility
+          const totalPages = Number(data.total_pages || 1);
+          if (loadMoreBtn) {
+            if (this.currentPage >= totalPages) {
+              loadMoreBtn.style.display = "none";
+            } else {
+              loadMoreBtn.style.display = "inline-flex";
+              loadMoreBtn.disabled = false;
+              loadMoreBtn.classList.remove("disabled");
+            }
+          }
+
+          // Update results count
+          const countEl = document.getElementById("resultsCount");
+          if (countEl) countEl.textContent = `${data.total_results || 0} results`;
+
+          // Re-apply i18n on newly inserted nodes (if your app exposes it)
+          if (window.app && typeof window.app.updateTranslations === "function") {
+            window.app.updateTranslations(grid);
+          }
+        })
+        .catch(error => {
+          console.error("Error loading content:", error);
+          if (loadMoreBtn) {
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.classList.remove("disabled");
+          }
+          if (window.showToast) showToast("Failed to load more content", "error");
+        });
+    }
+  };
+</script>
+{% endblock %}
