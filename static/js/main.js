@@ -469,19 +469,17 @@
         });
     }
 
-   async function apiRequest(endpoint, params = {}) {
+    async function apiRequest(endpoint, params = {}) {
   // Calls Flask proxy: /api/tmdb/<endpoint> (API key stays server-side)
   const urlParams = new URLSearchParams({
-    language: API_CONFIG.language,
-    ...params
+    ...params,
+    language: API_CONFIG.language
   });
 
-  const url = `/api/tmdb${endpoint}?${urlParams.toString()}`;
+  // endpoint must start with "/", e.g. "/movie/now_playing"
+  const url = `/api/tmdb${endpoint}${urlParams.toString() ? `?${urlParams}` : ''}`;
 
-  const response = await fetch(url, {
-    headers: { 'Accept': 'application/json' }
-  });
-
+  const response = await fetch(url, { headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
@@ -504,18 +502,6 @@
 
         const idx = Math.floor(Math.random() * candidates.length);
         return candidates[idx];
-    }
-
-    function pickRandomBackdrop(items) {
-        if (!Array.isArray(items) || !items.length) return null;
-
-        const candidates = items
-            .map(i => i?.backdrop_path || i?.poster_path)
-            .filter(Boolean);
-
-        if (!candidates.length) return null;
-
-        return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
     function setTopHeroBackgroundFromPath(path) {
@@ -680,56 +666,61 @@
         },
 
         async loadTopHeroBackground() {
-            try {
-                const response = await apiRequest('/trending/all/week', {page: 1});
-                const items = (response.results || []).slice(0, 12);
-                const randomPath = pickRandomBackdrop(items);
-                if (randomPath) setTopHeroBackgroundFromPath(randomPath);
-            } catch (e) {
-                console.error('Error loading top hero background:', e);
-            }
-        },
+  try {
+    const response = await apiRequest('/trending/all/week', { page: 1 });
+    const items = (response.results || []).slice(0, 12);
+    const randomPath = pickRandomBackdrop(items);
+    if (randomPath) setTopHeroBackgroundFromPath(randomPath);
+  } catch (error) {
+    console.error('Error loading top hero background:', error);
+  }
+},
 
         async loadHero() {
-            try {
-                const response = await apiRequest('/movie/now_playing', {page: 1});
-                state.sliderItems = (response.results || []).slice(0, 8).map(item => ({...item, media_type: 'movie'}));
+  try {
+    const response = await apiRequest('/movie/now_playing', { page: 1 });
 
-                const randomBackdrop = pickRandomBackdrop(state.sliderItems);
-                if (randomBackdrop) setTopHeroBackgroundFromPath(randomBackdrop);
+    state.sliderItems = (response.results || [])
+      .slice(0, 8)
+      .map(item => ({ ...item, media_type: 'movie' }));
 
-                if (state.sliderItems.length > 0) {
-                    this.renderSlider();
-                    this.startAutoPlay();
-                    this.setupSliderInteractions();
-                } else {
-                    this.loadFallbackContent();
-                }
-            } catch (error) {
-                console.error('Error loading hero content:', error);
-                this.loadFallbackContent();
-            }
-        },
+    const randomBackdrop = pickRandomBackdrop(state.sliderItems);
+    if (randomBackdrop) setTopHeroBackgroundFromPath(randomBackdrop);
+
+    if (state.sliderItems.length > 0) {
+      this.renderSlider();
+      this.startAutoPlay();
+      this.setupSliderInteractions();
+    } else {
+      this.loadFallbackContent();
+    }
+  } catch (error) {
+    console.error('Error loading hero content:', error);
+    this.loadFallbackContent();
+  }
+},
 
         async loadFallbackContent() {
-            try {
-                const response = await apiRequest('/trending/all/week');
-                state.sliderItems = (response.results || []).slice(0, 8).map(item => ({
-                    ...item,
-                    media_type: item.media_type || (item.title ? 'movie' : 'tv')
+  try {
+    const response = await apiRequest('/trending/all/week', { page: 1 });
 
-                }));
+    state.sliderItems = (response.results || [])
+      .slice(0, 8)
+      .map(item => ({
+        ...item,
+        media_type: item.media_type || (item.title ? 'movie' : 'tv')
+      }));
 
-                const randomBackdrop = pickRandomBackdrop(state.sliderItems);
-                if (randomBackdrop) setTopHeroBackgroundFromPath(randomBackdrop);
+    const randomBackdrop = pickRandomBackdrop(state.sliderItems);
+    if (randomBackdrop) setTopHeroBackgroundFromPath(randomBackdrop);
 
-                this.renderSlider();
-                this.startAutoPlay();
-                this.setupSliderInteractions();
-            } catch (error) {
-                console.error('Error loading fallback:', error);
-            }
-        },
+    this.renderSlider();
+    this.startAutoPlay();
+    this.setupSliderInteractions();
+  } catch (error) {
+    console.error('Error loading fallback:', error);
+  }
+},
 
         renderSlider() {
             const container = document.getElementById('heroSlidesContainer');
