@@ -2346,12 +2346,13 @@ img[src] {
   border: 1px solid rgba(99, 102, 241, 0.35);
   border-radius: 18px;
   width: 100%;
-  max-width: 1050px;
-  max-height: 94vh;
+  max-width: min(1080px, 94vw);
+  max-height: 96vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.2);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(99, 102, 241, 0.2);
   transform: scale(0.96) translateY(8px);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), max-width 0.3s ease, max-height 0.3s ease;
   position: relative;
@@ -2369,13 +2370,14 @@ img[src] {
 
 /* Header */
 .csp-modal-header {
-  padding: 1.1rem 1.5rem 0.9rem;
+  padding: 0.9rem 1.4rem;
   background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .csp-header-left {
@@ -2431,13 +2433,14 @@ img[src] {
 
 /* Server Switcher Bar */
 .csp-server-bar {
-  padding: 0.65rem 1.5rem;
+  padding: 0.6rem 1.4rem;
   background: rgba(15, 18, 32, 0.7);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .csp-server-label {
@@ -2506,12 +2509,13 @@ img[src] {
 /* TV Controls Bar */
 .csp-tv-bar {
   display: none;
-  padding: 0.6rem 1.5rem;
+  padding: 0.6rem 1.4rem;
   background: rgba(13, 15, 26, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .csp-tv-group {
@@ -2579,14 +2583,16 @@ img[src] {
 .csp-video-stage {
   position: relative;
   width: 100%;
+  height: 0;
   padding-top: 56.25%;
   background: #000000;
-  overflow: hidden;
+  flex-grow: 1;
 }
 
 .csp-video-stage iframe {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
@@ -2595,34 +2601,35 @@ img[src] {
 
 /* Footer Strip */
 .csp-modal-footer {
-  padding: 0.6rem 1.5rem;
+  padding: 0.5rem 1.4rem;
   background: rgba(13, 15, 26, 0.95);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #94a3b8;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   #cspPlayerModal {
-    padding: 0.4rem;
+    padding: 0.3rem;
   }
   .csp-modal-card {
     max-height: 98vh;
     border-radius: 14px;
   }
   .csp-modal-header {
-    padding: 0.8rem 1rem 0.6rem;
+    padding: 0.7rem 0.9rem 0.5rem;
   }
   .csp-modal-title {
     font-size: 1.05rem;
   }
   .csp-server-bar {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.9rem;
   }
   .csp-modal-footer {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.9rem;
   }
 }
