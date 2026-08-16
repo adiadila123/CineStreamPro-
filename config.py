@@ -83,7 +83,15 @@ class Config:
             'noResults': 'No results found',
             'moviesAvailable': 'Movies Available',
             'activeUsers': 'Active Users',
-            'countries': 'Countries'
+            'countries': 'Countries',
+            'serverStream': 'Server:',
+            'season': 'Season',
+            'episode': 'Episode',
+            'previous': 'Previous',
+            'next': 'Next',
+            'playerBufferingNotice': 'If a stream buffers or does not start, switch to SuperEmbed VIP or VidLink.',
+            'pressEscToClose': 'Press ESC to close',
+            'watching': 'Watching'
         },
         'ro': {
             'home': 'Acasă',
@@ -138,7 +146,15 @@ class Config:
             'noResults': 'Nu s-au găsit rezultate',
             'moviesAvailable': 'Filme Disponibile',
             'activeUsers': 'Utilizatori Activi',
-            'countries': 'Țări'
+            'countries': 'Țări',
+            'serverStream': 'Server:',
+            'season': 'Sezon',
+            'episode': 'Episod',
+            'previous': 'Anterior',
+            'next': 'Următor',
+            'playerBufferingNotice': 'Dacă un flux are buffering sau nu pornește, comută pe SuperEmbed VIP sau VidLink.',
+            'pressEscToClose': 'Apasă ESC pentru închidere',
+            'watching': 'Vizionare'
         },
         'es': {
             'home': 'Inicio',
@@ -193,7 +209,15 @@ class Config:
             'noResults': 'No se encontraron resultados',
             'moviesAvailable': 'Películas Disponibles',
             'activeUsers': 'Usuarios Activos',
-            'countries': 'Países'
+            'countries': 'Países',
+            'serverStream': 'Servidor:',
+            'season': 'Temporada',
+            'episode': 'Episodio',
+            'previous': 'Anterior',
+            'next': 'Siguiente',
+            'playerBufferingNotice': 'Si una transmisión se congela o no inicia, cambia a SuperEmbed VIP o VidLink.',
+            'pressEscToClose': 'Presiona ESC para cerrar',
+            'watching': 'Viendo'
         },
         'fr': {
             'home': 'Accueil',
@@ -248,7 +272,15 @@ class Config:
             'noResults': 'Aucun résultat trouvé',
             'moviesAvailable': 'Films Disponibles',
             'activeUsers': 'Utilisateurs Actifs',
-            'countries': 'Pays'
+            'countries': 'Pays',
+            'serverStream': 'Serveur:',
+            'season': 'Saison',
+            'episode': 'Épisode',
+            'previous': 'Précédent',
+            'next': 'Suivant',
+            'playerBufferingNotice': 'Si le flux se bloque ou ne démarre pas, passez à SuperEmbed VIP ou VidLink.',
+            'pressEscToClose': 'Appuyez sur ÉCHAP pour fermer',
+            'watching': 'Lecture'
         },
         'de': {
             'home': 'Startseite',
@@ -303,6 +335,14 @@ class Config:
             'noResults': 'Keine Ergebnisse gefunden',
             'moviesAvailable': 'Filme Verfügbar',
             'activeUsers': 'Aktive Nutzer',
-            'countries': 'Länder'
+            'countries': 'Länder',
+            'serverStream': 'Server:',
+            'season': 'Staffel',
+            'episode': 'Episode',
+            'previous': 'Zurück',
+            'next': 'Weiter',
+            'playerBufferingNotice': 'Wenn ein Stream puffert oder nicht startet, wechseln Sie zu SuperEmbed VIP oder VidLink.',
+            'pressEscToClose': 'Drücken Sie ESC zum Schließen',
+            'watching': 'Wiedergabe'
         }
     }

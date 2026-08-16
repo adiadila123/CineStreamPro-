@@ -69,7 +69,15 @@
       castNotAvailable: "Cast not available",
       noOverview: "No overview available.",
       movie: "Movie",
-      tvSeries: "TV Series"
+      tvSeries: "TV Series",
+      serverStream: "Server:",
+      season: "Season",
+      episode: "Episode",
+      previous: "Previous",
+      next: "Next",
+      playerBufferingNotice: "If a stream buffers or does not start, switch to SuperEmbed VIP or VidLink.",
+      pressEscToClose: "Press ESC to close",
+      watching: "Watching"
     },
 
     ro: {
@@ -136,7 +144,15 @@
       castNotAvailable: "Distribuție indisponibilă",
       noOverview: "Descriere indisponibilă.",
       movie: "Film",
-      tvSeries: "Serial TV"
+      tvSeries: "Serial TV",
+      serverStream: "Server:",
+      season: "Sezon",
+      episode: "Episod",
+      previous: "Anterior",
+      next: "Următor",
+      playerBufferingNotice: "Dacă un flux are buffering sau nu pornește, comută pe SuperEmbed VIP sau VidLink.",
+      pressEscToClose: "Apasă ESC pentru închidere",
+      watching: "Vizionare"
     },
 
     es: {
@@ -159,11 +175,11 @@
       comedy: "Comedia",
       comedyDesc: "Ríe a carcajadas",
       drama: "Drama",
-      dramaDesc: "Historias emocionales",
+      dramaDesc: "Historias emotivas",
       horror: "Terror",
-      horrorDesc: "Historias escalofriantes",
+      horrorDesc: "Historias espeluznantes",
       scifi: "Ciencia ficción",
-      scifiDesc: "Aventuras futuras",
+      scifiDesc: "Aventuras del futuro",
       animation: "Animación",
       animationDesc: "Mundos animados",
 
@@ -171,11 +187,11 @@
       allYears: "Todos los años",
       sortPopularity: "Popularidad",
       sortRating: "Mejor valoradas",
-      sortNewest: "Más nuevas",
+      sortNewest: "Más recientes",
       sortRevenue: "Ingresos",
       noResults: "No se encontró contenido",
       loadMore: "Cargar más",
-      clearFilter: "Quitar filtro",
+      clearFilter: "Borrar filtro",
 
       moviesAvailable: "Películas disponibles",
       countries: "Países",
@@ -203,7 +219,15 @@
       castNotAvailable: "Reparto no disponible",
       noOverview: "Sin descripción.",
       movie: "Película",
-      tvSeries: "Serie"
+      tvSeries: "Serie",
+      serverStream: "Servidor:",
+      season: "Temporada",
+      episode: "Episodio",
+      previous: "Anterior",
+      next: "Siguiente",
+      playerBufferingNotice: "Si una transmisión se congela o no inicia, cambia a SuperEmbed VIP o VidLink.",
+      pressEscToClose: "Presiona ESC para cerrar",
+      watching: "Viendo"
     },
 
     fr: {
@@ -270,7 +294,15 @@
       castNotAvailable: "Distribution non disponible",
       noOverview: "Aucun résumé.",
       movie: "Film",
-      tvSeries: "Série"
+      tvSeries: "Série",
+      serverStream: "Serveur:",
+      season: "Saison",
+      episode: "Épisode",
+      previous: "Précédent",
+      next: "Suivant",
+      playerBufferingNotice: "Si le flux se bloque ou ne démarre pas, passez à SuperEmbed VIP ou VidLink.",
+      pressEscToClose: "Appuyez sur ÉCHAP pour fermer",
+      watching: "Lecture"
     },
 
     de: {
@@ -337,7 +369,15 @@
       castNotAvailable: "Besetzung nicht verfügbar",
       noOverview: "Keine Beschreibung verfügbar.",
       movie: "Film",
-      tvSeries: "Serie"
+      tvSeries: "Serie",
+      serverStream: "Server:",
+      season: "Staffel",
+      episode: "Episode",
+      previous: "Zurück",
+      next: "Weiter",
+      playerBufferingNotice: "Wenn ein Stream puffert oder nicht startet, wechseln Sie zu SuperEmbed VIP oder VidLink.",
+      pressEscToClose: "Drücken Sie ESC zum Schließen",
+      watching: "Wiedergabe"
     }
   };
 
@@ -993,7 +1033,8 @@ function openCineStreamPlayer(id, mediaType = 'movie', title = '', totalSeasons 
 
   const typeBadge = document.getElementById('cspTypeBadge');
   if (typeBadge) {
-    typeBadge.innerText = mediaType === 'tv' ? 'SERIAL TV' : 'FILM';
+    const typeLabel = mediaType === 'tv' ? (t('tvSeries') || 'TV Series') : (t('movie') || 'Movie');
+    typeBadge.innerText = typeLabel.toUpperCase();
     typeBadge.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
   }
   
@@ -1008,12 +1049,14 @@ function openCineStreamPlayer(id, mediaType = 'movie', title = '', totalSeasons 
       eSelect.innerHTML = '';
       
       const maxSeasons = Math.max(1, totalSeasons || 5);
+      const seasonWord = t('season') || 'Season';
+      const episodeWord = t('episode') || 'Episode';
       for (let s = 1; s <= maxSeasons; s++) {
-        sSelect.innerHTML += `<option value="${s}">Sezonul ${s}</option>`;
+        sSelect.innerHTML += `<option value="${s}">${seasonWord} ${s}</option>`;
       }
       cspTotalEpisodes = 24;
       for (let e = 1; e <= cspTotalEpisodes; e++) {
-        eSelect.innerHTML += `<option value="${e}">Episodul ${e}</option>`;
+        eSelect.innerHTML += `<option value="${e}">${episodeWord} ${e}</option>`;
       }
     }
     cspUpdateTvNavButtons();
@@ -1026,8 +1069,13 @@ function openCineStreamPlayer(id, mediaType = 'movie', title = '', totalSeasons 
     btn.classList.toggle('active', btn.dataset.srv === cspActiveServer);
   });
 
-  cspUpdateIframe();
+  // Aplică traducerile pe modalul playerului
   const modal = document.getElementById('cspPlayerModal');
+  if (modal && typeof applyTranslations === 'function') {
+    applyTranslations(modal);
+  }
+
+  cspUpdateIframe();
   if (modal) {
     modal.classList.add('csp-show');
     document.body.style.overflow = 'hidden';

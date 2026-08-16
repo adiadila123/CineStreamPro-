@@ -16,7 +16,7 @@
           rel="stylesheet">
 
     <!-- Static CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.4">
 </head>
 <body>
 <!-- Top hero background (decorative) -->
@@ -155,7 +155,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Static JS -->
-<script src="{{ url_for('static', filename='js/main.js') }}?v=2.2"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}?v=2.4"></script>
 
 <!-- Back to Top -->
 <button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">
@@ -185,7 +185,7 @@
     <!-- Bara de Servere -->
     <div class="csp-server-bar">
       <span class="csp-server-label">
-        <i class="bi bi-hdd-network-fill" style="color: var(--primary);"></i> Server:
+        <i class="bi bi-hdd-network-fill" style="color: var(--primary);"></i> <span data-i18n="serverStream">{{ t('serverStream') or 'Server:' }}</span>
       </span>
       
       <div class="csp-server-list">
@@ -214,21 +214,21 @@
     <!-- Controale pentru Seriale (Sezoane / Episoade) -->
     <div id="cspTvControls" class="csp-tv-bar">
       <div class="csp-tv-group">
-        <span class="csp-tv-label"><i class="bi bi-layers-fill" style="color: var(--primary);"></i> Sezon:</span>
+        <span class="csp-tv-label"><i class="bi bi-layers-fill" style="color: var(--primary);"></i> <span data-i18n="season">{{ t('season') or 'Sezon' }}</span>:</span>
         <select id="cspSeasonSelect" class="csp-select" onchange="cspOnSeasonChange()"></select>
       </div>
       
       <div class="csp-tv-group">
-        <span class="csp-tv-label"><i class="bi bi-collection-play-fill" style="color: var(--secondary);"></i> Episod:</span>
+        <span class="csp-tv-label"><i class="bi bi-collection-play-fill" style="color: var(--secondary);"></i> <span data-i18n="episode">{{ t('episode') or 'Episod' }}</span>:</span>
         <select id="cspEpisodeSelect" class="csp-select" onchange="cspOnEpisodeChange()"></select>
       </div>
 
       <div class="csp-tv-group ms-auto">
         <button type="button" class="csp-ep-nav-btn" id="cspPrevEpBtn" onclick="cspPrevEpisode()">
-          <i class="bi bi-chevron-left"></i> Anterior
+          <i class="bi bi-chevron-left"></i> <span data-i18n="previous">{{ t('previous') or 'Anterior' }}</span>
         </button>
         <button type="button" class="csp-ep-nav-btn" id="cspNextEpBtn" onclick="cspNextEpisode()">
-          Următor <i class="bi bi-chevron-right"></i>
+          <span data-i18n="next">{{ t('next') or 'Următor' }}</span> <i class="bi bi-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -242,10 +242,10 @@
     <div class="csp-modal-footer">
       <div>
         <i class="bi bi-info-circle me-1" style="color: var(--primary);"></i>
-        <span>Dacă un flux are buffering sau nu pornește, comută pe <b>SuperEmbed VIP</b> sau <b>VidLink</b>.</span>
+        <span data-i18n="playerBufferingNotice">{{ t('playerBufferingNotice') or 'Dacă un flux are buffering sau nu pornește, comută pe SuperEmbed VIP sau VidLink.' }}</span>
       </div>
       <div class="d-none d-md-block text-muted">
-        <span>Apasă <kbd style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; padding: 2px 6px;">ESC</kbd> pentru închidere</span>
+        <span data-i18n="pressEscToClose">{{ t('pressEscToClose') or 'Apasă ESC pentru închidere' }}</span>
       </div>
     </div>
 
