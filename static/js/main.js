@@ -1111,17 +1111,18 @@ function cspUpdateIframe() {
       break;
 
     case 'vidsrc':
-      // VidSrc PRO
+      // VidSrc PRO (vidsrc.xyz endpoint funcțional fără blocaje)
       streamUrl = isTv 
-        ? `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${cspSeason}/${cspEpisode}`
-        : `https://vidsrc.cc/v2/embed/movie/${tmdbId}`;
+        ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${cspSeason}&episode=${cspEpisode}`
+        : `https://vidsrc.xyz/embed/movie/${tmdbId}`;
       break;
 
     case 'embedsu':
-      // Embed.su High Quality
+    case 'autoembed':
+      // AutoEmbed HD (autoembed.co endpoint de mare viteză)
       streamUrl = isTv 
-        ? `https://embed.su/embed/tv/${tmdbId}/${cspSeason}/${cspEpisode}`
-        : `https://embed.su/embed/movie/${tmdbId}`;
+        ? `https://autoembed.co/tv/tmdb/${tmdbId}-${cspSeason}-${cspEpisode}`
+        : `https://autoembed.co/movie/tmdb/${tmdbId}`;
       break;
 
     case 'twoembed':
