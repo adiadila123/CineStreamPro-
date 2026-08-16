@@ -164,53 +164,28 @@
 
 {% block scripts %}{% endblock %}
 
-<!-- Modal Player Universal CineStreamPro (Spectacular Cinema Grade) -->
+<!-- Modal Player Universal CineStreamPro (Stil Identic Modal Detalii/Trailer) -->
 <div id="cspPlayerModal" class="csp-modal-backdrop" onclick="cspOnBackdropClick(event)">
-  
-  <!-- Ambilight Ambient Glow Effect -->
-  <div class="csp-ambilight-layer" id="cspAmbilight"></div>
-
-  <!-- Player Chassis -->
   <div class="csp-modal-card" id="cspModalCard">
     
-    <!-- Top Header -->
+    <!-- Modal Header Identic -->
     <div class="csp-modal-header">
       <div class="csp-header-left">
-        <img id="cspMiniPoster" class="csp-mini-poster" src="" alt="Poster" style="display:none;">
-        <div class="csp-header-title-box">
-          <div class="csp-header-top-meta">
-            <span class="csp-live-badge"><span class="csp-pulse-dot"></span> LIVE STREAM</span>
-            <span class="csp-type-badge" id="cspTypeBadge"><i class="bi bi-film"></i> FILM</span>
-          </div>
-          <h3 class="csp-modal-title" id="cspModalTitle">Vizionare Film</h3>
-        </div>
-
-        <div class="csp-quality-tags">
-          <span class="csp-quality-tag"><i class="bi bi-badge-4k-fill text-warning me-1"></i>4K UHD</span>
-          <span class="csp-quality-tag"><i class="bi bi-soundwave text-info me-1"></i>DOLBY 5.1</span>
-          <span class="csp-quality-tag" style="color: #6ee7b7; border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08);">
-            <i class="bi bi-translate me-1"></i>SUB RO
-          </span>
-        </div>
+        <span class="badge" id="cspTypeBadge" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); font-size: 0.72rem; padding: 0.35rem 0.6rem; border-radius: 6px; font-weight: 700;">
+          FILM
+        </span>
+        <h4 class="csp-modal-title" id="cspModalTitle">Vizionare</h4>
       </div>
       
       <div class="csp-header-actions">
-        <button type="button" class="csp-icon-btn" onclick="cspToggleAmbilight()" title="Comută iluminarea ambientală Ambilight">
-          <i class="bi bi-lightbulb-fill" id="cspAmbilightIcon" style="color: #fbbf24;"></i>
-        </button>
-        <button type="button" class="csp-icon-btn" onclick="cspToggleTheater()" title="Comută modul Cinema Extins">
-          <i class="bi bi-aspect-ratio" id="cspTheaterIcon"></i>
-        </button>
-        <button type="button" class="csp-icon-btn csp-close-btn" onclick="cspCloseModal()" title="Închide (ESC)">
-          <i class="bi bi-x-lg"></i>
-        </button>
+        <button type="button" class="btn-close btn-close-white" onclick="cspCloseModal()" aria-label="Close"></button>
       </div>
     </div>
 
-    <!-- Futuristic Server Switcher Bar -->
+    <!-- Bara de Servere -->
     <div class="csp-server-bar">
       <span class="csp-server-label">
-        <i class="bi bi-hdd-network-fill" style="color: var(--primary);"></i> Server Stream:
+        <i class="bi bi-hdd-network-fill" style="color: var(--primary);"></i> Server:
       </span>
       
       <div class="csp-server-list">
@@ -219,10 +194,10 @@
           <i class="bi bi-translate"></i> SuperEmbed VIP (RO)
         </button>
         <button type="button" class="csp-srv-btn" data-srv="vidlink" onclick="cspChangeServer('vidlink', this)">
-          <i class="bi bi-lightning-charge-fill" style="color: #38bdf8;"></i> VidLink Ultra 4K
+          <i class="bi bi-lightning-charge-fill" style="color: #38bdf8;"></i> VidLink Fast HD
         </button>
         <button type="button" class="csp-srv-btn" data-srv="multiembed" onclick="cspChangeServer('multiembed', this)">
-          <i class="bi bi-play-circle-fill" style="color: #ec4899;"></i> MultiEmbed HD
+          <i class="bi bi-play-circle-fill" style="color: #ec4899;"></i> MultiEmbed
         </button>
         <button type="button" class="csp-srv-btn" data-srv="vidsrc" onclick="cspChangeServer('vidsrc', this)">
           <i class="bi bi-badge-hd-fill" style="color: #a855f7;"></i> VidSrc PRO
@@ -239,12 +214,12 @@
     <!-- Controale pentru Seriale (Sezoane / Episoade) -->
     <div id="cspTvControls" class="csp-tv-bar">
       <div class="csp-tv-group">
-        <span class="csp-tv-label"><i class="bi bi-layers-fill text-primary"></i> Sezon:</span>
+        <span class="csp-tv-label"><i class="bi bi-layers-fill" style="color: var(--primary);"></i> Sezon:</span>
         <select id="cspSeasonSelect" class="csp-select" onchange="cspOnSeasonChange()"></select>
       </div>
       
       <div class="csp-tv-group">
-        <span class="csp-tv-label"><i class="bi bi-collection-play-fill text-info"></i> Episod:</span>
+        <span class="csp-tv-label"><i class="bi bi-collection-play-fill" style="color: var(--secondary);"></i> Episod:</span>
         <select id="cspEpisodeSelect" class="csp-select" onchange="cspOnEpisodeChange()"></select>
       </div>
 
@@ -263,22 +238,14 @@
       <iframe id="cspVideoIframe" src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
     </div>
 
-    <!-- Spectacular Footer Strip -->
+    <!-- Footer -->
     <div class="csp-modal-footer">
-      <div class="csp-footer-status">
-        <i class="bi bi-shield-fill-check text-success"></i>
-        <span>Flux securizat. Schimbă serverul dacă întâmpini buffering.</span>
+      <div>
+        <i class="bi bi-info-circle me-1" style="color: var(--primary);"></i>
+        <span>Dacă un flux are buffering sau nu pornește, comută pe <b>SuperEmbed VIP</b> sau <b>VidLink</b>.</span>
       </div>
-      <div class="csp-footer-tools">
-        <button type="button" class="csp-tool-btn" onclick="cspUpdateIframe()" title="Reîncarcă stream-ul curent">
-          <i class="bi bi-arrow-clockwise"></i> Reîncarcă
-        </button>
-        <button type="button" class="csp-tool-btn" onclick="cspToggleTheater()" title="Comută lățimea ecranului">
-          <i class="bi bi-arrows-fullscreen"></i> Mod Cinema
-        </button>
-        <span class="d-none d-md-inline ms-2 text-muted small">
-          <kbd style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; padding: 2px 6px;">ESC</kbd>
-        </span>
+      <div class="d-none d-md-block text-muted">
+        <span>Apasă <kbd style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; padding: 2px 6px;">ESC</kbd> pentru închidere</span>
       </div>
     </div>
 

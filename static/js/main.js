@@ -993,13 +993,8 @@ function openCineStreamPlayer(id, mediaType = 'movie', title = '', totalSeasons 
 
   const typeBadge = document.getElementById('cspTypeBadge');
   if (typeBadge) {
-    if (mediaType === 'tv') {
-      typeBadge.innerHTML = '<i class="bi bi-tv"></i> SERIAL TV';
-      typeBadge.style.background = 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)';
-    } else {
-      typeBadge.innerHTML = '<i class="bi bi-film"></i> FILM';
-      typeBadge.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
-    }
+    typeBadge.innerText = mediaType === 'tv' ? 'SERIAL TV' : 'FILM';
+    typeBadge.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
   }
   
   // Afișează selectorul TV dacă este serial
