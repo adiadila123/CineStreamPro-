@@ -795,26 +795,28 @@
 
       container.innerHTML = (items || []).map(item => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
+        const titleSafe = (item.title || item.name || '').replace(/['"\\]/g, ' ');
 
         return `
           <div class="movie-card${isFeatured ? ' featured-card' : ''}"
                onclick="app.openContentModal(${item.id}, '${type}')">
             <div class="movie-card-image">
               <img src="${getPosterUrl(item.poster_path)}"
-                   alt="${item.title || item.name}"
+                   alt="${titleSafe}"
                    loading="lazy"
                    onerror="this.src='${getPosterUrl(null)}'">
 
               <div class="movie-card-overlay">
                 <button class="movie-card-play"
-                        onclick="event.stopPropagation(); app.openContentModal(${item.id}, '${type}')">
+                        title="Vizionează direct"
+                        onclick="event.stopPropagation(); openCineStreamPlayer(${item.id}, '${type}', '${titleSafe}')">
                   <i class="bi bi-play-fill"></i>
                 </button>
               </div>
             </div>
 
             <div class="movie-card-info">
-              <h4 class="movie-card-title">${item.title || item.name}</h4>
+              <h4 class="movie-card-title">${titleSafe}</h4>
               <div class="movie-card-meta">
                 <span>${(item.release_date || item.first_air_date || '').split('-')[0]}</span>
                 <span class="movie-card-rating">
@@ -845,48 +847,72 @@
           content.videos?.results?.find(v => v.type === 'Trailer') ||
           content.videos?.results?.[0];
 
+        const titleSafe = (content.title || content.name || '').replace(/['"\\]/g, ' ');
+        const totalSeasons = content.number_of_seasons || 1;
+
         const modalHtml = `
           <div class="modal fade" id="contentModal" tabindex="-1">
-            <div class="modal-dialog modal-fullscreen-md-down modal-lg">
-              <div class="modal-content bg-dark">
-                <div class="modal-header border-secondary">
-                  <h5 class="modal-title">${content.title || content.name}</h5>
+            <div class="modal-dialog modal-fullscreen-md-down modal-lg modal-dialog-centered">
+              <div class="modal-content text-white" style="background: linear-gradient(180deg, #161b2e 0%, #0d0f1a 100%); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(99, 102, 241, 0.2); overflow: hidden;">
+                <div class="modal-header border-0 pb-0 pt-3 px-4 d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); font-size: 0.72rem; padding: 0.35rem 0.6rem;">
+                      ${type === 'movie' ? 'FILM' : 'SERIAL TV'}
+                    </span>
+                    <h4 class="modal-title font-weight-bold text-white mb-0" style="font-family: 'Outfit', sans-serif;">${titleSafe}</h4>
+                  </div>
                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0">
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-lg-5 p-0">
+                <div class="modal-body p-4">
+                  <div class="row g-4">
+                    <div class="col-lg-5">
+                      <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); position: relative;">
                         <img src="${getImageUrl(content.poster_path, 'w500')}"
                              class="img-fluid w-100"
-                             alt="${content.title || content.name}"
-                             style="min-height: 400px; height: 100%; object-fit: cover;">
+                             alt="${titleSafe}"
+                             style="max-height: 380px; width: 100%; object-fit: cover;">
                       </div>
-                      <div class="col-lg-7 p-4">
-                        <p class="text-secondary">${content.overview || t('noOverview')}</p>
-                        <div class="mb-3">
-                          <span class="badge bg-primary me-2">★ ${Number(content.vote_average || 0).toFixed(1)}</span>
-                          <span class="badge bg-secondary">${content.release_date || content.first_air_date || ''}</span>
+                      
+                      <!-- Prominent Streaming Button -->
+                      <button class="btn btn-primary w-100 mt-3 py-2 fw-bold d-flex align-items-center justify-content-center gap-2"
+                              style="background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%); border: none; border-radius: 10px; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45); font-size: 1.05rem;"
+                              onclick="const modalEl = document.getElementById('contentModal'); const inst = bootstrap.Modal.getInstance(modalEl); if (inst) inst.hide(); openCineStreamPlayer(${content.id}, '${type}', '${titleSafe}', ${totalSeasons});">
+                        <i class="bi bi-play-fill fs-4"></i>
+                        <span data-i18n="watchNow">${t('watchNow') || 'Vizionează Acum'}</span>
+                      </button>
+                    </div>
+
+                    <div class="col-lg-7">
+                      <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge bg-primary px-2 py-1"><i class="bi bi-star-fill text-warning me-1"></i>★ ${Number(content.vote_average || 0).toFixed(1)}</span>
+                        <span class="badge bg-secondary px-2 py-1">${(content.release_date || content.first_air_date || '').split('-')[0]}</span>
+                        ${content.runtime ? `<span class="badge" style="background: rgba(255,255,255,0.08);">${content.runtime} min</span>` : ''}
+                        ${content.number_of_seasons ? `<span class="badge" style="background: rgba(255,255,255,0.08);">${content.number_of_seasons} sezoane</span>` : ''}
+                      </div>
+
+                      <p class="text-secondary mb-3" style="line-height: 1.6; font-size: 0.92rem;">${content.overview || t('noOverview')}</p>
+
+                      <h6 class="mt-3 text-white d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+                        <i class="bi bi-play-circle text-primary"></i> ${t('trailer')}
+                      </h6>
+                      ${trailer ? `
+                        <div class="ratio ratio-16x9 rounded overflow-hidden mt-2 mb-3" style="border: 1px solid rgba(255,255,255,0.1);">
+                          <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
                         </div>
+                      ` : `<p class="text-muted small">${t('noTrailer')}</p>`}
 
-                        <h6 class="mt-3"><i class="bi bi-play-circle me-2"></i>${t('trailer')}</h6>
-                        ${trailer ? `
-                          <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
-                          </div>
-                        ` : `<p class="text-muted">${t('noTrailer')}</p>`}
-
-                        <div class="mt-4">
-                          <h6 class="mb-3"><i class="bi bi-people me-2"></i>${t('cast')}</h6>
-                          <div id="modalCast" class="cast-list">
-                            ${cast.length > 0 ? cast.map(person => `
-                              <div class="cast-item">
-                                <img class="cast-avatar" src="${getPosterUrl(person.profile_path)}" alt="${person.name}">
-                                <div class="cast-name">${person.name}</div>
-                                <div class="cast-character">${person.character || ''}</div>
-                              </div>
-                            `).join('') : `<p class="text-muted">${t('castNotAvailable')}</p>`}
-                          </div>
+                      <div class="mt-3">
+                        <h6 class="mb-2 text-white d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+                          <i class="bi bi-people text-primary"></i> ${t('cast')}
+                        </h6>
+                        <div id="modalCast" class="cast-list">
+                          ${cast.length > 0 ? cast.map(person => `
+                            <div class="cast-item">
+                              <img class="cast-avatar" src="${getPosterUrl(person.profile_path)}" alt="${person.name}">
+                              <div class="cast-name">${person.name}</div>
+                              <div class="cast-character">${person.character || ''}</div>
+                            </div>
+                          `).join('') : `<p class="text-muted small">${t('castNotAvailable')}</p>`}
                         </div>
                       </div>
                     </div>
@@ -936,3 +962,245 @@
   window.t = t;
   window.showToast = showToast;
 })();
+
+// Stare Player CineStreamPro
+let cspActiveMedia = null;
+let cspActiveServer = 'superembed';
+let cspSeason = 1;
+let cspEpisode = 1;
+let cspTotalEpisodes = 24;
+let cspAmbilightEnabled = true;
+
+// Funcție apelată la click pe cardul de film / serial
+function openCineStreamPlayer(id, mediaType = 'movie', title = '', totalSeasons = 1, posterPath = '') {
+  cspActiveMedia = { id: id, media_type: mediaType, title: title, total_seasons: totalSeasons, poster_path: posterPath };
+  cspSeason = 1;
+  cspEpisode = 1;
+
+  const titleEl = document.getElementById('cspModalTitle');
+  if (titleEl) titleEl.innerText = title || 'Vizionare';
+
+  const posterImg = document.getElementById('cspMiniPoster');
+  if (posterImg) {
+    if (posterPath) {
+      const fullUrl = posterPath.startsWith('http') ? posterPath : `https://image.tmdb.org/t/p/w200${posterPath}`;
+      posterImg.src = fullUrl;
+      posterImg.style.display = 'block';
+    } else {
+      posterImg.style.display = 'none';
+    }
+  }
+
+  const typeBadge = document.getElementById('cspTypeBadge');
+  if (typeBadge) {
+    if (mediaType === 'tv') {
+      typeBadge.innerHTML = '<i class="bi bi-tv"></i> SERIAL TV';
+      typeBadge.style.background = 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)';
+    } else {
+      typeBadge.innerHTML = '<i class="bi bi-film"></i> FILM';
+      typeBadge.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)';
+    }
+  }
+  
+  // Afișează selectorul TV dacă este serial
+  const tvBox = document.getElementById('cspTvControls');
+  if (mediaType === 'tv') {
+    if (tvBox) tvBox.style.display = 'flex';
+    const sSelect = document.getElementById('cspSeasonSelect');
+    const eSelect = document.getElementById('cspEpisodeSelect');
+    if (sSelect && eSelect) {
+      sSelect.innerHTML = '';
+      eSelect.innerHTML = '';
+      
+      const maxSeasons = Math.max(1, totalSeasons || 5);
+      for (let s = 1; s <= maxSeasons; s++) {
+        sSelect.innerHTML += `<option value="${s}">Sezonul ${s}</option>`;
+      }
+      cspTotalEpisodes = 24;
+      for (let e = 1; e <= cspTotalEpisodes; e++) {
+        eSelect.innerHTML += `<option value="${e}">Episodul ${e}</option>`;
+      }
+    }
+    cspUpdateTvNavButtons();
+  } else {
+    if (tvBox) tvBox.style.display = 'none';
+  }
+
+  // Activează butonul serverului implicit
+  document.querySelectorAll('.csp-srv-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.srv === cspActiveServer);
+  });
+
+  cspUpdateIframe();
+  const modal = document.getElementById('cspPlayerModal');
+  if (modal) {
+    modal.classList.add('csp-show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function cspUpdateIframe() {
+  if (!cspActiveMedia) return;
+  const isTv = (cspActiveMedia.media_type === 'tv');
+  const tmdbId = cspActiveMedia.id;
+  let streamUrl = '';
+
+  switch (cspActiveServer) {
+    case 'superembed':
+      // SuperEmbed VIP cu subtitrare automată în limba română
+      streamUrl = isTv 
+        ? `https://multiembed.mov/directstream.php?video_id=${tmdbId}&tmdb=1&s=${cspSeason}&e=${cspEpisode}&sub_lang=ro&sub_label=Romanian`
+        : `https://multiembed.mov/directstream.php?video_id=${tmdbId}&tmdb=1&sub_lang=ro&sub_label=Romanian`;
+      break;
+
+    case 'multiembed':
+      // MultiEmbed Player
+      streamUrl = isTv 
+        ? `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1&s=${cspSeason}&e=${cspEpisode}`
+        : `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
+      break;
+
+    case 'vidlink':
+      // VidLink Ultra Fast HD Player
+      streamUrl = isTv 
+        ? `https://vidlink.pro/tv/${tmdbId}/${cspSeason}/${cspEpisode}`
+        : `https://vidlink.pro/movie/${tmdbId}`;
+      break;
+
+    case 'vidsrc':
+      // VidSrc PRO
+      streamUrl = isTv 
+        ? `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${cspSeason}/${cspEpisode}`
+        : `https://vidsrc.cc/v2/embed/movie/${tmdbId}`;
+      break;
+
+    case 'embedsu':
+      // Embed.su High Quality
+      streamUrl = isTv 
+        ? `https://embed.su/embed/tv/${tmdbId}/${cspSeason}/${cspEpisode}`
+        : `https://embed.su/embed/movie/${tmdbId}`;
+      break;
+
+    case 'twoembed':
+      // 2Embed (format corectat)
+      streamUrl = isTv 
+        ? `https://www.2embed.cc/embedtv/${tmdbId}&s=${cspSeason}&e=${cspEpisode}`
+        : `https://www.2embed.cc/embed/${tmdbId}`;
+      break;
+
+    default:
+      streamUrl = `https://vidlink.pro/movie/${tmdbId}`;
+      break;
+  }
+
+  const iframe = document.getElementById('cspVideoIframe');
+  if (iframe) iframe.src = streamUrl;
+}
+
+function cspChangeServer(srv, btnEl) {
+  cspActiveServer = srv;
+  document.querySelectorAll('.csp-srv-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  const activeBtn = btnEl || (window.event && window.event.target) || document.querySelector(`.csp-srv-btn[data-srv="${srv}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+  cspUpdateIframe();
+}
+
+function cspOnSeasonChange() {
+  const sSelect = document.getElementById('cspSeasonSelect');
+  if (sSelect) cspSeason = Number(sSelect.value) || 1;
+  cspEpisode = 1;
+  const eSelect = document.getElementById('cspEpisodeSelect');
+  if (eSelect) eSelect.value = 1;
+  cspUpdateTvNavButtons();
+  cspUpdateIframe();
+}
+
+function cspOnEpisodeChange() {
+  const eSelect = document.getElementById('cspEpisodeSelect');
+  if (eSelect) cspEpisode = Number(eSelect.value) || 1;
+  cspUpdateTvNavButtons();
+  cspUpdateIframe();
+}
+
+function cspPrevEpisode() {
+  if (cspEpisode > 1) {
+    cspEpisode--;
+    const eSelect = document.getElementById('cspEpisodeSelect');
+    if (eSelect) eSelect.value = cspEpisode;
+    cspUpdateTvNavButtons();
+    cspUpdateIframe();
+  }
+}
+
+function cspNextEpisode() {
+  if (cspEpisode < cspTotalEpisodes) {
+    cspEpisode++;
+    const eSelect = document.getElementById('cspEpisodeSelect');
+    if (eSelect) eSelect.value = cspEpisode;
+    cspUpdateTvNavButtons();
+    cspUpdateIframe();
+  }
+}
+
+function cspUpdateTvNavButtons() {
+  const prevBtn = document.getElementById('cspPrevEpBtn');
+  const nextBtn = document.getElementById('cspNextEpBtn');
+  if (prevBtn) prevBtn.disabled = (cspEpisode <= 1);
+  if (nextBtn) nextBtn.disabled = (cspEpisode >= cspTotalEpisodes);
+}
+
+function cspToggleAmbilight() {
+  cspAmbilightEnabled = !cspAmbilightEnabled;
+  const glow = document.getElementById('cspAmbilight');
+  const icon = document.getElementById('cspAmbilightIcon');
+  if (glow) {
+    glow.classList.toggle('csp-glow-off', !cspAmbilightEnabled);
+  }
+  if (icon) {
+    icon.style.color = cspAmbilightEnabled ? '#fbbf24' : '#64748b';
+  }
+}
+
+function cspToggleTheater() {
+  const card = document.getElementById('cspModalCard');
+  const icon = document.getElementById('cspTheaterIcon');
+  if (card) {
+    card.classList.toggle('csp-theater-mode');
+    if (icon) {
+      icon.className = card.classList.contains('csp-theater-mode') ? 'bi bi-fullscreen-exit' : 'bi bi-aspect-ratio';
+    }
+  }
+}
+
+function cspOnBackdropClick(event) {
+  if (event.target.id === 'cspPlayerModal') {
+    cspCloseModal();
+  }
+}
+
+function cspCloseModal() {
+  const modal = document.getElementById('cspPlayerModal');
+  if (modal) {
+    modal.classList.remove('csp-show');
+  }
+  const iframe = document.getElementById('cspVideoIframe');
+  if (iframe) {
+    iframe.src = '';
+  }
+  document.body.style.overflow = '';
+}
+
+// Închidere pe tasta Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('cspPlayerModal');
+    if (modal && modal.classList.contains('csp-show')) {
+      cspCloseModal();
+    }
+  }
+});

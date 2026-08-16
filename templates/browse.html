@@ -66,7 +66,7 @@
                              loading="lazy" onerror="this.src='{{ get_poster_url(None) }}'">
                         <div class="movie-card-overlay">
                             <button class="movie-card-play"
-                                    onclick="event.stopPropagation(); app.openContentModal({{ item.id }}, '{{ item.media_type or 'movie' }}')">
+                                    onclick="event.stopPropagation(); openCineStreamPlayer('{{ item.id }}', '{{ item.media_type|default('movie') }}', '{{ item.title|default(item.name)|escape }}')">
                                 <i class="bi bi-play-fill"></i>
                             </button>
                         </div>
@@ -179,6 +179,7 @@
 
           results.forEach(item => {
             const mediaType = item.media_type || (item.title ? "movie" : "tv");
+            const titleSafe = (item.title || item.name || "").replace(/['"\\]/g, ' ');
 
             const col = document.createElement("div");
             col.className = "col-6 col-md-4 col-lg-3";
@@ -187,18 +188,18 @@
                 <div class="movie-card-image">
                   <img
                     src="${item.poster_path ? "https://image.tmdb.org/t/p/w200" + item.poster_path : "{{ get_poster_url(None) }}"}"
-                    alt="${(item.title || item.name || "").replace(/"/g, "&quot;")}"
+                    alt="${titleSafe}"
                     loading="lazy"
                     onerror="this.src='{{ get_poster_url(None) }}'">
                   <div class="movie-card-overlay">
                     <button class="movie-card-play"
-                      onclick="event.stopPropagation(); app.openContentModal(${item.id}, '${mediaType}')">
+                      onclick="event.stopPropagation(); openCineStreamPlayer(${item.id}, '${mediaType}', '${titleSafe}')">
                       <i class="bi bi-play-fill"></i>
                     </button>
                   </div>
                 </div>
                 <div class="movie-card-info">
-                  <h4 class="movie-card-title">${item.title || item.name || ""}</h4>
+                  <h4 class="movie-card-title">${titleSafe}</h4>
                   <div class="movie-card-meta">
                     <span>${(item.release_date || item.first_air_date || "").split("-")[0]}</span>
                     <span class="movie-card-rating"><i class="bi bi-star-fill"></i> ${Number(item.vote_average || 0).toFixed(1)}</span>

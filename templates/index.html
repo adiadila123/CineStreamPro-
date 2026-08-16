@@ -294,7 +294,9 @@
       }
 
       // IMPORTANT: Wrap each card in a column
-      grid.innerHTML = results.map(item => `
+      grid.innerHTML = results.map(item => {
+        const titleSafe = (item.title || item.name || '').replace(/['"\\]/g, ' ');
+        return `
         <div class="col-6 col-md-4 col-lg-3">
           <div class="movie-card" onclick="app.openContentModal(${item.id}, 'movie')">
             <div class="movie-card-image">
@@ -302,18 +304,18 @@
                 src="${item.poster_path
                   ? 'https://image.tmdb.org/t/p/w200' + item.poster_path
                   : '{{ get_poster_url(None) }}'}"
-                alt="${(item.title || item.name || '').replace(/"/g, '&quot;')}"
+                alt="${titleSafe}"
                 loading="lazy"
                 onerror="this.src='{{ get_poster_url(None) }}'">
               <div class="movie-card-overlay">
                 <button class="movie-card-play"
-                  onclick="event.stopPropagation(); app.openContentModal(${item.id}, 'movie')">
+                  onclick="event.stopPropagation(); openCineStreamPlayer(${item.id}, 'movie', '${titleSafe}')">
                   <i class="bi bi-play-fill"></i>
                 </button>
               </div>
             </div>
             <div class="movie-card-info">
-              <h4 class="movie-card-title">${item.title || item.name || ''}</h4>
+              <h4 class="movie-card-title">${titleSafe}</h4>
               <div class="movie-card-meta">
                 <span>${(item.release_date || '').split('-')[0]}</span>
                 <span class="movie-card-rating">
@@ -323,7 +325,8 @@
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       if (window.app?.updateTranslations) window.app.updateTranslations(grid);
     })
