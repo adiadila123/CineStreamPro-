@@ -1110,13 +1110,6 @@ function cspUpdateIframe() {
         : `https://vidlink.pro/movie/${tmdbId}`;
       break;
 
-    case 'vidsrc':
-      // VidSrc PRO (vidsrc.xyz endpoint funcțional fără blocaje)
-      streamUrl = isTv 
-        ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${cspSeason}&episode=${cspEpisode}`
-        : `https://vidsrc.xyz/embed/movie/${tmdbId}`;
-      break;
-
     case 'embedsu':
     case 'autoembed':
       // AutoEmbed HD (autoembed.co endpoint de mare viteză)
