@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-CineStream Pro - Main Application Entry Point
-A Flask-based movie and TV show discovery platform.
+CineStream Pro - Main Application Entry Point (v2.2 Production)
+A modern cinema streaming and discovery platform.
 """
 
 from flask import Flask
