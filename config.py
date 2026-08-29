@@ -89,7 +89,7 @@ class Config:
             'episode': 'Episode',
             'previous': 'Previous',
             'next': 'Next',
-            'playerBufferingNotice': 'If a stream buffers or does not start, switch to SuperEmbed VIP or VidLink.',
+            'playerBufferingNotice': 'If a stream buffers or does not start, switch server (VidLink, MultiEmbed, AutoEmbed).',
             'pressEscToClose': 'Press ESC to close',
             'watching': 'Watching'
         },
@@ -152,7 +152,7 @@ class Config:
             'episode': 'Episod',
             'previous': 'Anterior',
             'next': 'Următor',
-            'playerBufferingNotice': 'Dacă un flux are buffering sau nu pornește, comută pe SuperEmbed VIP sau VidLink.',
+            'playerBufferingNotice': 'Dacă un flux are buffering sau nu pornește, comută pe alt server (VidLink, MultiEmbed, AutoEmbed).',
             'pressEscToClose': 'Apasă ESC pentru închidere',
             'watching': 'Vizionare'
         },
@@ -215,7 +215,7 @@ class Config:
             'episode': 'Episodio',
             'previous': 'Anterior',
             'next': 'Siguiente',
-            'playerBufferingNotice': 'Si una transmisión se congela o no inicia, cambia a SuperEmbed VIP o VidLink.',
+            'playerBufferingNotice': 'Si una transmisión se congela o no inicia, cambia a otro servidor (VidLink, MultiEmbed, AutoEmbed).',
             'pressEscToClose': 'Presiona ESC para cerrar',
             'watching': 'Viendo'
         },
@@ -278,7 +278,7 @@ class Config:
             'episode': 'Épisode',
             'previous': 'Précédent',
             'next': 'Suivant',
-            'playerBufferingNotice': 'Si le flux se bloque ou ne démarre pas, passez à SuperEmbed VIP ou VidLink.',
+            'playerBufferingNotice': 'Si le flux se bloque ou ne démarre pas, passez à un autre serveur (VidLink, MultiEmbed, AutoEmbed).',
             'pressEscToClose': 'Appuyez sur ÉCHAP pour fermer',
             'watching': 'Lecture'
         },
@@ -341,7 +341,7 @@ class Config:
             'episode': 'Episode',
             'previous': 'Zurück',
             'next': 'Weiter',
-            'playerBufferingNotice': 'Wenn ein Stream puffert oder nicht startet, wechseln Sie zu SuperEmbed VIP oder VidLink.',
+            'playerBufferingNotice': 'Wenn ein Stream puffert oder nicht startet, wechseln Sie zu einem anderen Server (VidLink, MultiEmbed, AutoEmbed).',
             'pressEscToClose': 'Drücken Sie ESC zum Schließen',
             'watching': 'Wiedergabe'
         }

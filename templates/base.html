@@ -189,11 +189,8 @@
       </span>
       
       <div class="csp-server-list">
-        <button type="button" class="csp-srv-btn active" data-srv="superembed" onclick="cspChangeServer('superembed', this)">
+        <button type="button" class="csp-srv-btn active" data-srv="vidlink" onclick="cspChangeServer('vidlink', this)">
           <span class="csp-live-dot"></span>
-          <i class="bi bi-translate"></i> SuperEmbed VIP (RO)
-        </button>
-        <button type="button" class="csp-srv-btn" data-srv="vidlink" onclick="cspChangeServer('vidlink', this)">
           <i class="bi bi-lightning-charge-fill" style="color: #38bdf8;"></i> VidLink Fast HD
         </button>
         <button type="button" class="csp-srv-btn" data-srv="multiembed" onclick="cspChangeServer('multiembed', this)">
@@ -239,7 +236,7 @@
     <div class="csp-modal-footer">
       <div>
         <i class="bi bi-info-circle me-1" style="color: var(--primary);"></i>
-        <span data-i18n="playerBufferingNotice">{{ t('playerBufferingNotice') or 'Dacă un flux are buffering sau nu pornește, comută pe SuperEmbed VIP sau VidLink.' }}</span>
+        <span data-i18n="playerBufferingNotice">{{ t('playerBufferingNotice') or 'Dacă un flux are buffering sau nu pornește, comută pe alt server (VidLink, MultiEmbed, AutoEmbed).' }}</span>
       </div>
       <div class="d-none d-md-block text-muted">
         <span data-i18n="pressEscToClose">{{ t('pressEscToClose') or 'Apasă ESC pentru închidere' }}</span>
